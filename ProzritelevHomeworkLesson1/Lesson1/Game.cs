@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Collections.Generic;
+
 namespace MyGame
 {
     static class Game
@@ -16,15 +18,31 @@ namespace MyGame
         }
 
         #region массив из BaseObject        
-        public static BaseObject[] _objs;
+        public static List<BaseObject> _objs;
 
         public static void Load()
         {
-            _objs = new BaseObject[30];
-            for (int i = 0; i < _objs.Length / 2; i++)
-                _objs[i] = new BaseObject(new Point(600, i * 20), new Point(-i, -i), new Size(10, 10));
-            for (int i = _objs.Length / 2; i < _objs.Length; i++)
-                _objs[i] = new Star(new Point(600, i * 20), new Point(-i, 0), new Size(5, 5));
+            _objs = new List<BaseObject>();
+
+            for (int i = 0; i < 15; i++)
+                _objs.Add(new BaseObject(new Point(600, i * 20), new Point(-i, -i), new Size(10, 10)));
+            for (int i = 15; i < 30; i++)
+                _objs.Add(new Star(new Point(600, i * 20), new Point(-i, 0), new Size(5, 5)));
+
+            Image newImage = Image.FromFile("HSGMs.png");
+            for (int i = 1; i < 16; i++)
+                _objs.Add(new StarImg(newImage, new Point(300, i * 30), 
+                    new Point(i, i), new Size(newImage.Width, newImage.Height)));
+
+            for (int i = -2; i <= 2 ; i++)
+            {
+                for (int j = -2; j <= 2 ; j++)
+                {
+                    if (!(i == 0 && j == 0))
+                        _objs.Add(new StarN(Color.Yellow, 2, new Point(400 + i * 14, 300 + j * 14), 
+                            new Point(4 * i + 2*(-j+i), 4 * j + 2*(i+j)), new Size(7, 3)));
+                }
+            }
         }
         #endregion массив из BaseObject
 
@@ -58,22 +76,25 @@ namespace MyGame
         public static void Draw()
         {
             // Проверяем вывод графики
-            Buffer.Graphics.Clear(Color.Black);
-            Buffer.Graphics.DrawRectangle(Pens.White, new Rectangle(100, 100, 200, 200));
-            Buffer.Graphics.FillEllipse(Brushes.Wheat, new Rectangle(100, 100, 200, 200));
-            Buffer.Render();
+            //Buffer.Graphics.Clear(Color.Black);
+            //Buffer.Graphics.DrawRectangle(Pens.White, new Rectangle(100, 100, 200, 200));
+            //Buffer.Graphics.FillEllipse(Brushes.Wheat, new Rectangle(100, 100, 200, 200));
+            //Buffer.Render();           
 
             Buffer.Graphics.Clear(Color.Black);
             foreach (BaseObject obj in _objs)
             {
                 obj.Draw();
-            }
+            }           
+
             Buffer.Render();
         }
         public static void Update()
         {
             foreach (BaseObject obj in _objs)
                 obj.Update();
+
+            
         }
     }
 }
