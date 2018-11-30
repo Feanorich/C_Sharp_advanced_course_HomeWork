@@ -18,7 +18,7 @@ namespace MyGame
         }
 
         #region массив из BaseObject        
-        public static List<BaseObject> _objs;
+        public static List<BaseObject> _objs;   //вместо массива, что в примере, используем список
 
         public static void Load()
         {
@@ -29,17 +29,19 @@ namespace MyGame
             for (int i = 15; i < 30; i++)
                 _objs.Add(new Star(new Point(600, i * 20), new Point(-i, 0), new Size(5, 5)));
 
+            //добавим летающих картинок
             Image newImage = Image.FromFile("HSGMs.png");
             for (int i = 1; i < 16; i++)
                 _objs.Add(new StarImg(newImage, new Point(300, i * 30), 
                     new Point(i, i), new Size(newImage.Width, newImage.Height)));
 
+            //добавим желтых, семилучевых звездочек
             for (int i = -2; i <= 2 ; i++)
             {
                 for (int j = -2; j <= 2 ; j++)
                 {
                     if (!(i == 0 && j == 0))
-                        _objs.Add(new StarN(Color.Yellow, 2, new Point(400 + i * 14, 300 + j * 14), 
+                        _objs.Add(new StarN(Color.Yellow, 7, new Point(400 + i * 14, 300 + j * 14), 
                             new Point(4 * i + 2*(-j+i), 4 * j + 2*(i+j)), new Size(7, 3)));
                 }
             }
@@ -74,13 +76,7 @@ namespace MyGame
         }
 
         public static void Draw()
-        {
-            // Проверяем вывод графики
-            //Buffer.Graphics.Clear(Color.Black);
-            //Buffer.Graphics.DrawRectangle(Pens.White, new Rectangle(100, 100, 200, 200));
-            //Buffer.Graphics.FillEllipse(Brushes.Wheat, new Rectangle(100, 100, 200, 200));
-            //Buffer.Render();           
-
+        {                 
             Buffer.Graphics.Clear(Color.Black);
             foreach (BaseObject obj in _objs)
             {
@@ -92,9 +88,7 @@ namespace MyGame
         public static void Update()
         {
             foreach (BaseObject obj in _objs)
-                obj.Update();
-
-            
+                obj.Update();            
         }
     }
 }

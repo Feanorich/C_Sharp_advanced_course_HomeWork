@@ -6,6 +6,10 @@ namespace MyGame
     {
         protected Image img;
 
+        /// <summary>
+        /// Картинка
+        /// </summary>
+        /// <param name="_img">Объект Image содержащий картинку</param>        
         public StarImg(Image _img, Point pos, Point dir, Size size) : base(pos, dir, size)
         {
             img = _img;
