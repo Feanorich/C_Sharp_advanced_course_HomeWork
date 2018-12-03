@@ -20,31 +20,49 @@ namespace MyGame
         #region массив из BaseObject        
         public static List<BaseObject> _objs;   //вместо массива, что в примере, используем список
 
+        private static Bullet _bullet;
+        private static Asteroid[] _asteroids;        
+
         public static void Load()
         {
             _objs = new List<BaseObject>();
+            _bullet = new Bullet(new Point(0, 200), new Point(5, 0), new Size(4, 1));
+            _asteroids = new Asteroid[3];
+            Random rnd = new Random();
 
-            for (int i = 0; i < 15; i++)
-                _objs.Add(new BaseObject(new Point(600, i * 20), new Point(-i, -i), new Size(10, 10)));
-            for (int i = 15; i < 30; i++)
-                _objs.Add(new Star(new Point(600, i * 20), new Point(-i, 0), new Size(5, 5)));
-
-            //добавим летающих картинок
-            Image newImage = Image.FromFile("HSGMs.png");
-            for (int i = 1; i < 16; i++)
-                _objs.Add(new StarImg(newImage, new Point(300, i * 30), 
-                    new Point(i, i), new Size(newImage.Width, newImage.Height)));
-
-            //добавим желтых, семилучевых звездочек
-            for (int i = -2; i <= 2 ; i++)
+            //звезды
+            for (int i = 0; i < 30; i++)    
             {
-                for (int j = -2; j <= 2 ; j++)
-                {
-                    if (!(i == 0 && j == 0))
-                        _objs.Add(new StarN(Color.Yellow, 7, new Point(400 + i * 14, 300 + j * 14), 
-                            new Point(4 * i + 2*(-j+i), 4 * j + 2*(i+j)), new Size(7, 3)));
-                }
+                int r = rnd.Next(5, 50);
+                _objs.Add(new Star(new Point(1000, rnd.Next(0, Game.Height)), new Point(-r, r), new Size(3, 3)));
             }
+            
+            //астероиды
+            for (var i = 0; i < _asteroids.Length; i++) 
+            {
+                int r = rnd.Next(5, 50);
+                _asteroids[i] = new Asteroid(new Point(1000, rnd.Next(0, Game.Height)), new Point(-r / 5, r), 
+                    new Size(r, r));
+            }
+
+            #region свои зездочки пока уберем
+            ////добавим летающих картинок
+            //Image newImage = Image.FromFile("HSGMs.png");
+            //for (int i = 1; i < 16; i++)
+            //    _objs.Add(new StarImg(newImage, new Point(300, i * 30), 
+            //        new Point(i, i), new Size(newImage.Width, newImage.Height)));
+
+            ////добавим желтых, семилучевых звездочек
+            //for (int i = -2; i <= 2 ; i++)
+            //{
+            //    for (int j = -2; j <= 2 ; j++)
+            //    {
+            //        if (!(i == 0 && j == 0))
+            //            _objs.Add(new StarN(Color.Yellow, 7, new Point(400 + i * 14, 300 + j * 14), 
+            //                new Point(4 * i + 2*(-j+i), 4 * j + 2*(i+j)), new Size(7, 3)));
+            //    }
+            //}
+            #endregion 
         }
         #endregion массив из BaseObject
 
