@@ -13,7 +13,7 @@ namespace MyGame
         public StarImg(Image _img, Point pos, Point dir, Size size) : base(pos, dir, size)
         {
             img = _img;
-        }
+        }        
 
         public override void Draw()
         {

@@ -13,6 +13,7 @@ namespace MyGame
         // Ширина и высота игрового поля
         public static int Width { get; set; }
         public static int Height { get; set; }
+
         static Game()
         {
         }
@@ -21,13 +22,15 @@ namespace MyGame
         public static List<BaseObject> _objs;   //вместо массива, что в примере, используем список
 
         private static Bullet _bullet;
-        private static Asteroid[] _asteroids;        
+        private static Asteroid[] _asteroids;
+
+        static Size bulletSize = new Size(4, 1);
 
         public static void Load()
         {
             _objs = new List<BaseObject>();
-            _bullet = new Bullet(new Point(0, 200), new Point(5, 0), new Size(4, 1));
-            _asteroids = new Asteroid[3];
+            _bullet = new Bullet(new Point(0, 200), new Point(5, 0), bulletSize);
+            _asteroids = new Asteroid[5];
             Random rnd = new Random();
 
             //звезды
@@ -41,8 +44,8 @@ namespace MyGame
             for (var i = 0; i < _asteroids.Length; i++) 
             {
                 int r = rnd.Next(5, 50);
-                _asteroids[i] = new Asteroid(new Point(1000, rnd.Next(0, Game.Height)), new Point(-r / 5, r), 
-                    new Size(r, r));
+                _asteroids[i] = new Asteroid(new Point(Game.Width, rnd.Next(0, Game.Height)), 
+                    new Point(-r / 5, r), new Size(r, r));
             }
 
             #region свои зездочки пока уберем
@@ -94,19 +97,49 @@ namespace MyGame
         }
 
         public static void Draw()
-        {                 
+        {
             Buffer.Graphics.Clear(Color.Black);
             foreach (BaseObject obj in _objs)
             {
                 obj.Draw();
-            }           
+            }
+
+            foreach (Asteroid obj in _asteroids)
+            {
+                obj.Draw();
+            }
+
+            _bullet.Draw();
 
             Buffer.Render();
         }
         public static void Update()
         {
             foreach (BaseObject obj in _objs)
-                obj.Update();            
+                obj.Update();
+
+            foreach (Asteroid a in _asteroids)
+            {
+                a.Update();
+                if (a.Collision(_bullet))
+                {
+                    System.Media.SystemSounds.Hand.Play();
+
+                    Random rnd = new Random();
+
+                    //не просто перенесем астероид в начало, а перерисуем его
+                    //с новыми размерами и скоростью
+                    int r = rnd.Next(5, 50);
+                    a.Restart(new Point(Game.Width, rnd.Next(0, Game.Height)), 
+                        new Point(-r / 5, r), new Size(r, r));
+
+                    int margin = 100;   //отступ от края экрана
+                    int speed = rnd.Next(5, 10);
+                    _bullet.Restart(new Point(0, rnd.Next(margin, Game.Height - margin)), new Point(speed, 0));                   
+                    
+                }
+            }
+            _bullet.Update();
         }
     }
 }
