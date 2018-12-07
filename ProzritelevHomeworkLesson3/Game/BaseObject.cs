@@ -2,11 +2,16 @@
 using System.Drawing;
 namespace MyGame
 {
+    public delegate void Message();
+    public delegate void LogStr(object o, string msg);
+
     abstract class BaseObject : ICollision, IRestart
     {
         protected Point Pos;
         protected Point Dir;
-        protected Size Size;       
+        protected Size Size;
+
+        public event LogStr logStr;
 
         /// <summary>
         /// Конструктор базового объекта
@@ -69,6 +74,11 @@ namespace MyGame
             Restart(pos, dir);
             Size.Width = size.Width;
             Size.Height = size.Height;
+        }
+
+        public void ToLog(object o, string msg)
+        {
+            if (logStr != null) logStr(o, msg);
         }
     }
 }
