@@ -1,0 +1,118 @@
+﻿<Window x:Class="WPFbase.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPFbase"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        x:Name="StartWindow"
+        Title="MainWindow" Height="500" Width="900" Background="WhiteSmoke">
+
+    <Window.Resources>
+        <local:DepConverter x:Key = "DepConverter" />
+    </Window.Resources>
+    <Grid x:Name="MainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="43.2"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="600"/>
+            <ColumnDefinition Width="97*"/>
+        </Grid.ColumnDefinitions>
+        <DataGrid Grid.Row="1" Grid.Column="0" Width="560"
+                  x:Name="ListWorkers" 
+                  Grid.ColumnSpan="3" AutoGenerateColumns="False" 
+                  EnableRowVirtualization="True" ItemsSource="{Binding}" 
+                  Margin="10,28.8,10,10" HorizontalAlignment="left" 
+                  IsReadOnly="True"
+                  >
+            <DataGrid.Columns>
+                <DataGridTextColumn x:Name="idColumn" Binding="{Binding Id}" Header="Id" IsReadOnly="True" Width="Auto"/>
+                <DataGridTextColumn x:Name="fIOColumn" Binding="{Binding FIO}" Header="ФИО" Width="Auto"/>
+                <DataGridTextColumn x:Name="depColumn" Binding="{Binding Department}" Header="DepId" Width="Auto"/>
+                <DataGridTextColumn x:Name="depColumn2" 
+                    Binding="{Binding Department, 
+                    Converter={StaticResource DepConverter}}" Header="Отдел" 
+                    Width="Auto"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <!--<ListView x:Name="ListWorkers"  Margin="10,28.8,10,10.4" 
+                 Grid.Row="1" Grid.Column="0" Background="White"                   
+                  >
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header = "Имя" Width = "200" x:Name="nameW"
+                        DisplayMemberBinding = "{Binding Name}" />
+                    <GridViewColumn Header = "Отдел" 
+                        DisplayMemberBinding = "{Binding Department.Name}" />
+                </GridView>
+            </ListView.View>
+
+
+        </ListView>-->
+        <DataGrid Grid.Row="1" Grid.Column="1" 
+                  x:Name="ListDepartments" AutoGenerateColumns="False" 
+                  EnableRowVirtualization="True" ItemsSource="{Binding}" 
+                  Margin="10,28.8,0,10.4" HorizontalAlignment="left" 
+                  IsReadOnly="True" Width="274"
+                  >
+            <DataGrid.Columns>
+                <DataGridTextColumn x:Name="idDep" Binding="{Binding Id}" Header="Id" IsReadOnly="True" Width="Auto"/>
+                
+                <DataGridTemplateColumn x:Name="nameDep1" Width="Auto"
+                                        Header="Наименование">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <TextBox x:Name="nameD"  
+                                 Text = "{Binding Name, UpdateSourceTrigger=LostFocus}"                                  
+                                 Grid.Column="0" TextChanged="nameD_TextChanged"                                     
+                                  ></TextBox>
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <!--<DataGridTextColumn x:Name="nameDep" Binding="{Binding Name}" Header="Наименование" Width="Auto"/>-->
+            </DataGrid.Columns>
+        </DataGrid>
+        <!--<ListBox x:Name="ListDepartments"  Margin="10,28.8,9.6,10.4" 
+                 Grid.Row="1" Grid.Column="1" Background="White">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <TextBox x:Name="nameD"  
+                                 Text = "{Binding Name}"                                  
+                                 Grid.Column="0" TextChanged="nameD_TextChanged" 
+                                  ></TextBox>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>-->
+        <Label Content="Сотрудники" Margin="10,10,0,0" Grid.Column="0"
+               HorizontalAlignment="Left" 
+               VerticalAlignment="Top" Height="26" Width="75" />
+        <Label Content="Отделы" Margin="10,10,0,0" Grid.Column="1"
+               HorizontalAlignment="Left" 
+               VerticalAlignment="Top" Height="26" Width="51" />
+        <Button x:Name="btnAddW" Content="Добавить" HorizontalAlignment="Left" 
+                Margin="10,4.8,0,0" VerticalAlignment="Top" Width="75" 
+                Grid.Row="1" Height="20"/>
+        <Button x:Name="btnDelW" Content="Удалить" HorizontalAlignment="Left" 
+                Margin="90,4.8,0,0" VerticalAlignment="Top" Width="75" 
+                Grid.Row="1" Height="20"/>
+        <Button x:Name="btnDef" Content="Заполнить" HorizontalAlignment="Left" 
+                Margin="209,10,0,0" VerticalAlignment="Top" Width="75"
+                Grid.Row="0" Grid.Column="1"/>
+        <Button x:Name="btnAddD" Content="Добавить" HorizontalAlignment="Left" 
+            Margin="10,4.8,0,0" VerticalAlignment="Top" Width="75" 
+            Grid.Row="1" Height="20" Grid.Column="1"/>
+        <Button x:Name="btnDelD" Content="Удалить" HorizontalAlignment="Left" 
+            Margin="91,4.8,0,0" VerticalAlignment="Top" Width="75" 
+            Grid.Row="1" Height="20" Grid.Column="1"/>
+
+
+
+    </Grid>
+</Window>
