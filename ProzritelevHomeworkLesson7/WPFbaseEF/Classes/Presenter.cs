@@ -19,11 +19,8 @@ namespace WPFbase.Classes
             this.view = View;
             model = new Model();
 
-            model.DefaultData();
-                        
-            //view.ColWorkers.ItemsSource = DataBase.workers;
-            //view.ColDepartments.ItemsSource = DataBase.departments;
-
+            model.DefaultData();                        
+            
             //мутим SQL
             DataBase.MyDB.Workers.Load();
             view.ColWorkers.ItemsSource = 
@@ -77,9 +74,7 @@ namespace WPFbase.Classes
         /// Добавление сотрудника
         /// </summary>
         public void AddW()
-        {
-            //DataBase.MyDB.Workers.Add(new Workers() { FIO = "cdcsdcsd", Department = 3});
-            //DataBase.MyDB.SaveChanges();
+        {      
             
             EditWorker editWorker = ShowEditDialog();
 

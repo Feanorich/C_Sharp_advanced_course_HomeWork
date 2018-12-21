@@ -11,34 +11,11 @@ namespace WPFbase.Classes
     /// База данных с работниками и департаментами
     /// </summary>
     class DataBase
-    {
+    {        
         /// <summary>
-        /// список работников
+        /// EF объект с нашей базой
         /// </summary>
-        public static ObservableCollection<Employee> workers =
-            new ObservableCollection<Employee>();
-        /// <summary>
-        /// список отделов
-        /// </summary>
-        public static ObservableCollection<Department> departments =
-            new ObservableCollection<Department>();
-
-        public static WPFbaseEntities MyDB = new WPFbaseEntities();
-
-        //public static string DepConverter(object value)
-        //{
-        //    Departments dep = DataBase.MyDB.Departments.Find(value);
-        //    if (value == null)
-        //    {
-        //        return "";
-        //    }
-        //    if (dep == null)
-        //    {
-        //        if ((int)value > 0) return "error";
-        //        else return "";
-        //    }
-        //    else return dep.Name;
-        //}
+        public static WPFbaseEntities MyDB = new WPFbaseEntities();        
 
         public static Departments DepConverter(object value)
         {

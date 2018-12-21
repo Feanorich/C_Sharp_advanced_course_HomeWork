@@ -16,19 +16,7 @@ namespace WPFbase.Classes
         /// первичное заполнение коллекций
         /// </summary>
         public void DefaultData()
-        {
-            //создадим экземпляры отделов
-            Department management = new Department("Управленческий отдел");
-            Department personnel = new Department("Кадровый отдел");
-            //заполним отделы
-            DataBase.departments.Add(management);
-            DataBase.departments.Add(personnel);
-            //заполним чуваков
-            DataBase.workers.Add(new Employee("Иванов", management));
-            DataBase.workers.Add(new Employee("Петров", personnel));
-            DataBase.workers.Add(new Employee("Сидоров"));
-
-            
+        {     
 
             if (DataBase.MyDB.Departments.Count() == 0)
             {
