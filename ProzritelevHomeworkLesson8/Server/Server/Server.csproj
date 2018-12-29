@@ -89,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
+    <Content Include="ReadMe.txt" />
     <Content Include="Web.config" />
     <Content Include="WPFbaseEntities.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
