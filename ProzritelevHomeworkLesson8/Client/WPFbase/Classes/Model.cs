@@ -1,31 +1,59 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net.Http.Headers;
 
 namespace WPFbase.Classes
 {
     class Model
-    {
+    {       
+
         public Model()
         {
+            Log.Msg("создаем модель");
         }
+
+        static async Task<ObservableCollection<T>> GetListAsync<T>(string path)
+        {
+            ObservableCollection<T> products = null;
+            try
+            {
+                HttpResponseMessage response = Http.client.GetAsync(path).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    products = 
+                    response.Content.ReadAsAsync<ObservableCollection<T>>().Result;
+                }
+            }
+            catch (Exception)
+            {
+                Log.Msg("Не удалось загрузить список " + products.GetType());
+            }
+            return products;
+        }        
+
+        public void LoadData()
+        {
+            Log.Msg("загружаем базу");
+
+            DataBase.departments.Clear();
+            DataBase.workers.Clear();            
+                        
+            DataBase.departments = GetListAsync<Department>(Http.urlGetD).Result;
+                        
+            DataBase.workers = GetListAsync<Employee>(Http.urlGetW).Result;
+        }
+
         /// <summary>
         /// первичное заполнение коллекций
         /// </summary>
         public void DefaultData()
-        {
-            //создадим экземпляры отделов
-            Department management = new Department("Управленческий отдел");
-            Department personnel = new Department("Кадровый отдел");
-            //заполним отделы
-            DataBase.departments.Add(management);
-            DataBase.departments.Add(personnel);
-            //заполним чуваков
-            DataBase.workers.Add(new Employee("Иванов", management));
-            DataBase.workers.Add(new Employee("Петров", personnel));
-            DataBase.workers.Add(new Employee("Сидоров"));
+        {            
+            MakePost("", Http.urlDD);
         }
         /// <summary>
         /// Добавляет нового сотрудника в базу
@@ -36,7 +64,20 @@ namespace WPFbase.Classes
         {
             if (name != String.Empty)
             {
-                DataBase.workers.Add(new Employee(name, dep));
+                //DataBase.workers.Add(new Employee(name, dep));
+
+                try
+                {
+                    string StrW = @"{ 'Id':0,'FIO':'" + name + @"','Department':"+dep.Id+"}";
+                                        
+                    MakePost(StrW, Http.urlAddW);
+
+                }
+                catch (Exception)
+                {
+
+                }
+
             }
         }
         /// <summary>
@@ -47,14 +88,32 @@ namespace WPFbase.Classes
         /// <param name="dep">Департамент сотрудника</param>
         public void EditWorker(Employee w, string name, Department dep)
         {
-            if (name != String.Empty)
+            if (w != null)
             {
-                if (w.Name != name)
-                { w.Name = name; }
+                if (name != String.Empty)
+                {
+                    Nullable<int> dId = (dep == null) ? 0 : dep.Id;
+                    string StrW = @"{ 'Id':" + w.Id + ",'FIO':'" + name + @"','Department':" + dId + "}";
 
-                if (w.Department != dep)
-                { w.Department = dep; }
+                    MakePost(StrW, Http.urlEditW);
+
+                }
             }
+            
+        }
+        /// <summary>
+        /// Удаление сотрудника из базы
+        /// </summary>
+        /// <param name="w">Удаляемый сотрудник</param>
+        public void DelWorker(Employee w)
+        {
+            if (w != null)
+            {
+                string StrW = @"{ 'Id':" + w.Id + ",'FIO':'" + w.FIO + @"','Department':" + w.Department + "}";
+
+                MakePost(StrW, Http.urlDelW);
+            }
+            
         }
         /// <summary>
         /// Добавление нового департамента в базу
@@ -62,19 +121,31 @@ namespace WPFbase.Classes
         /// <param name="name">Наименование департамента</param>
         public void NewDep(string name = "новый отдел")
         {
-            DataBase.departments.Add(new Department(name));
+            Department ND = new Department(name);
+            //DataBase.departments.Add(ND);
+
+            try
+            {
+                string StrDep = @"{ 'Id':0,'Name':'"+ name + @"'}";                
+
+                MakePost(StrDep, Http.urlAddD);
+
+            }
+            catch (Exception)
+            {
+                
+            }
+            
         }
         /// <summary>
         /// Удаляет департамент из базы данных
         /// </summary>
         /// <param name="d">Удаляемый департамент</param>
         public void RemoveDep(Department d)
-        {            
-            foreach (var w in DataBase.workers)
-            {
-                if (w.Department == d) w.Department = null;
-            }
-            DataBase.departments.Remove(d);
+        {
+            string StrDep = @"{ 'Id':" + d.Id + @",'Name':'" + d.Name + @"'}";            
+
+            MakePost(StrDep, Http.urlDelD);
         }
         /// <summary>
         /// Редактирование данных о департаменте в базе
@@ -83,7 +154,21 @@ namespace WPFbase.Classes
         /// <param name="newName">Новое название</param>
         public void EditDep(Department D, string newName)
         {
-            D.Name = newName;
+            
+            //D.Name = newName;
+            string StrDep = @"{ 'Id':" + D.Id + @",'Name':'" + newName + @"'}";
+
+            MakePost(StrDep, Http.urlEditD);
+
+        }
+
+        public HttpResponseMessage MakePost(string StrCont, string url)
+        {
+            StringContent cont = new StringContent(StrCont, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = Http.client.PostAsync(url, cont).Result;
+            Log.Msg(response.StatusCode.ToString());
+
+            return response;
         }
     }
 }

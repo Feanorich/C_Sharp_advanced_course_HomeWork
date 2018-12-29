@@ -13,15 +13,19 @@ namespace WPFbase.Classes
 
         public Presenter(IView View)
         {
+            Log.Msg("создаем презентер");
+
             this.view = View;
             model = new Model();
 
-            model.DefaultData();
-                        
+            //model.DefaultData();
+            model.LoadData();
+            Log.Msg("привязываем коллекции");
             view.ColWorkers.ItemsSource = DataBase.workers;
             view.ColDepartments.ItemsSource = DataBase.departments;
             
-        }
+        }        
+
         /// <summary>
         /// Открывает диалог редактирования сотрудника
         /// </summary>
@@ -32,8 +36,8 @@ namespace WPFbase.Classes
             editWorker.SelectDepartment.ItemsSource = DataBase.departments;
             if (w != null)
             {
-                editWorker.WName = w.Name;
-                editWorker.SelectDepartment.SelectedItem = w.Department;
+                editWorker.WName = w.FIO;
+                editWorker.SelectDepartment.SelectedItem = DataBase.FindDep(w.Department);
             }
             editWorker.ShowDialog();
             return editWorker;
@@ -53,7 +57,8 @@ namespace WPFbase.Classes
                 Department NewDep = 
                     (Department)editWorker.SelectDepartment.SelectedItem;
 
-                model.EditWorker(w, editWorker.WName, NewDep);                
+                model.EditWorker(w, editWorker.WName, NewDep);
+                Upd();
             }
         }
         /// <summary>
@@ -64,15 +69,19 @@ namespace WPFbase.Classes
             EditWorker editWorker = ShowEditDialog();
 
             model.NewWorker(editWorker.WName, 
-                (Department)editWorker.SelectDepartment.SelectedItem);            
+                (Department)editWorker.SelectDepartment.SelectedItem);
+            Upd();
         }
         /// <summary>
         /// Удаление сотрудника
         /// </summary>
         public void DelW()
         {
-            int ind = view.ColWorkers.SelectedIndex;
-            DataBase.workers.Remove((Employee)view.ColWorkers.SelectedItem);
+            //int ind = view.ColWorkers.SelectedIndex;
+            //DataBase.workers.Remove((Employee)view.ColWorkers.SelectedItem);
+            model.DelWorker((Employee)view.ColWorkers.SelectedItem);
+            Upd();
+            
         }
         /// <summary>
         /// Добавление/удаление дупартаментов
@@ -90,6 +99,7 @@ namespace WPFbase.Classes
             {                
                 model.NewDep();
             }
+            Upd();
         }
         /// <summary>
         /// редактирование отдела
@@ -100,9 +110,23 @@ namespace WPFbase.Classes
             int ind = view.ColDepartments.SelectedIndex;
             if (ind >= 0)
             {
-                Department D = DataBase.departments[ind];
+                Department D = (Department)view.ColDepartments.SelectedItem;
                 model.EditDep(D, newName);
             }
+            Upd();
+        }
+
+        public void Upd()
+        {
+            model.LoadData();
+            view.ColWorkers.ItemsSource = DataBase.workers;
+            view.ColDepartments.ItemsSource = DataBase.departments;
+        }
+
+        public void Default()
+        {
+            model.DefaultData();
+            Upd();
         }
     }
 }

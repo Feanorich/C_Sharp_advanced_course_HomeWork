@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -55,6 +56,10 @@ namespace WPFbase
 
         public MainWindow()
         {
+            Log.debug = true;
+
+            Log.Msg("Инициализируем мэин виндоу");
+
             InitializeComponent();
 
             p = new Presenter(this);            
@@ -62,6 +67,8 @@ namespace WPFbase
             ListWorkers.MouseDoubleClick += delegate { p.EditWorker(); };  
             btnAddW.Click += delegate { p.AddW(); };
             btnDelW.Click += delegate { p.DelW(); };
+            btnUpd.Click += delegate { p.Upd(); };
+            btnDef.Click += delegate { p.Default(); };
 
             ListDepartments.MouseDoubleClick += delegate { p.EditColD(); };
 
@@ -69,8 +76,26 @@ namespace WPFbase
 
         private void nameD_TextChanged(object sender, TextChangedEventArgs e)
         {
-            p.EditDepartment(((TextBox)sender).Text);            
-        }      
+            
+            p.EditDepartment(((TextBox)sender).Text);
+
+        }
+
         
+    }
+
+    public class DepConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+        System.Globalization.CultureInfo culture)
+        {
+            return DataBase.DepConverter(value);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

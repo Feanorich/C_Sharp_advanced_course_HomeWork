@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WPFbase
+namespace ConsoleClient
 {
     public class Employee : INotifyPropertyChanged
     {
@@ -15,13 +15,13 @@ namespace WPFbase
 
         public int Id { get; set; }
         //public string FIO { get; set; }
-        public Nullable<int> department; //{ get; set; }
+        public Nullable<int> Department { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        
+
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));            
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public Employee()
@@ -47,7 +47,7 @@ namespace WPFbase
 
         public override string ToString()
         {
-            return String.Format("{0} из {1}", name, (Department == null) ? "ниоткуда" : dep.Name);
+            return String.Format("{0} из ({1})", name, (Department == null) ? "ниоткуда" : Department.ToString());
         }
 
         public string FIO
@@ -56,11 +56,10 @@ namespace WPFbase
             set { name = value; NotifyPropertyChanged(); }
         }
 
-        public Nullable<int> Department
+        public Department DepName
         {
-            get { return department; }
-
-            set { department = value; NotifyPropertyChanged(); }
+            get { return dep; }
+            set { dep = value; Department = dep.Id; NotifyPropertyChanged(); }
         }
     }
 }
